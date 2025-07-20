@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIY Circuits Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons (e.g., cart, delete, whatsapp) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e0e0e0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a0a0a0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #808080;
+        }
+        /* Hide specific elements on print */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8 lg:p-10 min-h-screen flex items-center justify-center">
+    <div class="container mx-auto bg-white p-6 sm:p-8 md:p-10 rounded-xl shadow-lg max-w-6xl w-full">
+        <!-- Header Section -->
+        <header class="text-center mb-8 pb-4 border-b border-gray-200">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">DIY Circuits</h1>
+            <p class="text-gray-600 mt-2">Address: 373, Near Chinnapa Akhada, Panchpaoli Rd, Balabhaupeth, Nagpur, Maharashtra 440017</p>
+            <p class="text-gray-600">Contact: +91-8446173429, +91-75585 56937</p>
+            <p class="text-600">Website: <a href="https://www.diycircuits.in" target="_blank" class="text-blue-600 hover:underline">www.diycircuits.in</a></p>
+            <div class="flex justify-center space-x-4 mt-2">
+                <a href="https://www.instagram.com/diycircuits/" target="_blank" class="text-pink-600 hover:text-pink-700 text-2xl transition ease-in-out duration-150">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://youtube.com/@diycircuits?si=Hhudrc8d40ZFQkbU" target="_blank" class="text-red-600 hover:text-red-700 text-2xl transition ease-in-out duration-150">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://wa.me/918446173429" target="_blank" class="text-green-600 hover:text-green-700 text-2xl transition ease-in-out duration-150">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+        </header>
+
+        <!-- Navigation Buttons (Visible on all main views) -->
+        <nav id="mainNav" class="mb-8 flex justify-center space-x-4 no-print relative">
+            <button id="showStudentBtn" class="px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition ease-in-out duration-150 shadow-sm">
+                Student View
+            </button>
+            <!-- Admin Login button moved to the top right corner -->
+            <button id="showLoginBtn" class="absolute top-0 right-0 mt-2 mr-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition ease-in-out duration-150 shadow-sm text-sm">
+                Admin Login
+            </button>
+        </nav>
+
+        <!-- Login Section -->
+        <section id="loginSection" class="view-section hidden">
+            <div class="max-w-md mx-auto bg-blue-50 p-8 rounded-xl shadow-inner">
+                <h2 class="text-2xl font-semibold text-blue-800 mb-6 text-center">Admin Login</h2>
+                <p class="text-sm text-red-700 mb-4 bg-red-100 p-3 rounded-md border border-red-200">
+                    <strong>Important Security Warning:</strong> This dashboard uses your browser's Local Storage. Your credentials (username and password) are hardcoded directly in the code, which is not secure. For real applications, a secure server-side authentication system (like Firebase Authentication) should be used.
+                </p>
+                <form id="loginForm">
+                    <div class="mb-4">
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <input type="text" id="username" name="username" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div class="mb-6">
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="password" name="password" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <button type="submit"
+                            class="w-full px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-150">
+                        Login
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Admin Dashboard Section -->
+        <section id="adminDashboard" class="view-section hidden">
+            <div class="flex justify-between items-center mb-6 no-print">
+                <h2 class="text-2xl font-semibold text-gray-800">Admin Panel</h2>
+                <div class="flex space-x-3">
+                    <button id="showAdminProjectsBtn" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition ease-in-out duration-150 shadow-sm">
+                        Manage Projects
+                    </button>
+                    <button id="showAdminInquiriesBtn" class="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition ease-in-out duration-150 shadow-sm relative">
+                        View Inquiries <span id="newInquiriesBadge" class="absolute top-0 right-0 -mt-1 -mr-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </button>
+                    <button id="adminLogoutBtn" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition ease-in-out duration-150 shadow-sm">
+                        Logout
+                    </button>
+                </div>
+            </div>
+            <p class="text-sm text-red-700 mb-4 bg-red-100 p-3 rounded-md border border-red-200">
+                <strong>Important Data Warning:</strong> This dashboard uses your browser's Local Storage. Project and inquiry data is stored only in your browser. If you clear browser cache/data, this data will be permanently lost. For critical data, using a server-side database (like Firebase Firestore) is highly recommended.
+            </p>
+
+            <!-- Admin Projects Management Sub-section -->
+            <div id="adminProjectsManagement" class="admin-sub-section">
+                <!-- New Project Entry Form (Admin Only) -->
+                <div class="mb-8 p-6 bg-blue-50 rounded-lg shadow-inner no-print">
+                    <h3 id="adminProjectFormTitle" class="text-xl font-semibold text-blue-800 mb-4">Add New Project</h3>
+                    <form id="adminProjectForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="hidden" id="adminProjectId" name="id">
+                        <div>
+                            <label for="adminProjectCategory" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                            <input type="text" id="adminProjectCategory" name="category" required
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="adminProjectTitle" class="block text-sm font-medium text-gray-700 mb-1">Project Title</label>
+                            <input type="text" id="adminProjectTitle" name="title" required
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="adminProjectDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea id="adminProjectDescription" name="description" rows="3"
+                                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="adminProjectCost" class="block text-sm font-medium text-gray-700 mb-1">Cost (₹)</label>
+                            <input type="number" id="adminProjectCost" name="cost" required min="0" step="1"
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                        <div class="md:col-span-2 flex justify-end space-x-2">
+                            <button type="button" id="cancelEditProjectBtn"
+                                    class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-150 hidden">
+                                Cancel Edit
+                            </button>
+                            <button type="submit" id="submitProjectBtn"
+                                    class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-150">
+                                Add Project
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- JSON Upload Section -->
+                <div class="mb-8 p-6 bg-green-50 rounded-lg shadow-inner no-print">
+                    <h3 class="text-xl font-semibold text-green-800 mb-4">Upload Projects (JSON File)</h3>
+                    <p class="text-sm text-gray-700 mb-3">
+                        You can upload a JSON file containing a list of your projects. The file format should be:
+                        <code class="block bg-gray-100 p-2 rounded-md mt-2 text-xs">
+                            [<br>
+                            &nbsp;&nbsp;{ "category": "Category Name", "title": "Project Title", "description": "Project Description", "cost": 1234 },<br>
+                            &nbsp;&nbsp;{ "category": "Another Category", "title": "Another Project", "description": "Another Description", "cost": 5678 }<br>
+                            ]
+                        </code>
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
+                        <input type="file" id="jsonUploadInput" accept=".json" class="flex-grow block w-full text-sm text-gray-700
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-md file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-blue-50 file:text-blue-700
+                            hover:file:bg-blue-100"/>
+                        <button id="uploadJsonBtn"
+                                class="px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition ease-in-out duration-150">
+                            Upload Projects
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin Project List -->
+                <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">All Projects (Admin View)</h3>
+                    <div class="overflow-x-auto rounded-lg shadow-md">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-200">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider rounded-tl-lg">Category</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Project Title</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Cost (₹)</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider rounded-tr-lg no-print">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminProjectTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- Admin project rows will be inserted here by JavaScript -->
+                            </tbody>
+                        </table>
+                        <div id="noAdminProjectsMessage" class="text-center py-4 text-gray-500 hidden">No projects yet. Add a new project!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Inquiries View Sub-section -->
+            <div id="adminInquiriesView" class="admin-sub-section hidden">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Student Inquiries</h3>
+                <p class="text-sm text-gray-600 mb-4 no-print">
+                    <strong>Note for Admin:</strong> Discounts (5% for review/referral) are applied manually during final price negotiation. Check the 'Referral Code Used' column.
+                </p>
+                <div class="overflow-x-auto rounded-lg shadow-md">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-200">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Inquiry ID</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Student Name</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Contact</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Projects</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Total (₹)</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Referral Code Used</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider no-print">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminInquiriesTableBody" class="bg-white divide-y divide-gray-200">
+                            <!-- Inquiry rows will be inserted here -->
+                        </tbody>
+                    </table>
+                    <div id="noInquiriesMessage" class="text-center py-4 text-gray-500 hidden">No new inquiries yet.</div>
+                </div>
+                <div class="flex justify-end mt-4 no-print">
+                    <button id="clearAllInquiriesBtn" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition ease-in-out duration-150 shadow-sm">
+                        Clear All Inquiries
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Student Dashboard Section -->
+        <section id="studentDashboard" class="view-section hidden">
+            <!-- Feedback & Referral Section (Top) -->
+            <div class="mt-4 mb-6 p-6 bg-yellow-50 rounded-lg shadow-inner no-print">
+                <h3 class="text-xl font-semibold text-yellow-800 mb-4">Your Feedback & Referrals Matter!</h3>
+                
+                <div class="mb-6 p-4 bg-yellow-100 rounded-md border border-yellow-200">
+                    <p class="text-gray-700 mb-3">
+                        We'd love your feedback! Post a review to our profile and get a <strong>5% discount</strong> on any project.
+                    </p>
+                    <a href="https://g.page/r/CZxwe-UnodgqEBE/review" target="_blank"
+                       class="inline-flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition ease-in-out duration-150 shadow-sm">
+                        <i class="fas fa-star mr-2"></i> Leave a Review Now!
+                    </a>
+                </div>
+
+                <div class="p-4 bg-yellow-100 rounded-md border border-yellow-200">
+                    <p class="text-gray-700 mb-3">
+                        Refer a friend and both get a <strong>5% discount</strong> on your projects! Share your unique referral link:
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                        <input type="text" id="referralLinkDisplay" readonly placeholder="Click 'Generate' for your link"
+                               class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 text-gray-700 sm:text-sm cursor-not-allowed">
+                        <button id="generateReferralLinkBtn"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition ease-in-out duration-150 shadow-sm flex-shrink-0">
+                            Generate Link
+                        </button>
+                        <button id="copyReferralLinkBtn"
+                                class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition ease-in-out duration-150 shadow-sm flex-shrink-0 hidden">
+                            Copy Link
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">
+                        Your friend can use this link or the code in the inquiry form to claim their discount.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mb-6 no-print">
+                <h2 class="text-2xl font-semibold text-gray-800">Student View - Available Projects</h2>
+                <div class="flex space-x-3">
+                    <button id="viewCartBtn" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition ease-in-out duration-150 shadow-sm flex items-center">
+                        <i class="fas fa-shopping-cart mr-2"></i> View Cart (<span id="cartItemCount">0</span>)
+                    </button>
+                    <button id="directWhatsappBtn" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition ease-in-out duration-150 shadow-sm flex items-center">
+                        <i class="fab fa-whatsapp mr-2"></i> Direct Inquiry
+                    </button>
+                </div>
+            </div>
+
+            <!-- Project Filter and Search -->
+            <div class="mb-6 p-4 bg-gray-100 rounded-lg shadow-inner no-print">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="categoryFilter" class="block text-sm font-medium text-gray-700 mb-1">Filter by Category</label>
+                        <select id="categoryFilter" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="">All Categories</option>
+                            <!-- Categories will be dynamically loaded here -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="projectSearch" class="block text-sm font-medium text-gray-700 mb-1">Search by Project Title</label>
+                        <input type="text" id="projectSearch" placeholder="Search projects..."
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Project List (Cards) -->
+            <div id="studentProjectList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Student project cards will be inserted here by JavaScript -->
+            </div>
+            <div id="noStudentProjectsMessage" class="text-center py-4 text-gray-500 hidden">No projects found matching your criteria.</div>
+
+            <!-- Feedback & Referral Section (Bottom) -->
+            <div class="mt-10 p-6 bg-yellow-50 rounded-lg shadow-inner no-print">
+                <h3 class="text-xl font-semibold text-yellow-800 mb-4">Your Feedback & Referrals Matter!</h3>
+                
+                <div class="mb-6 p-4 bg-yellow-100 rounded-md border border-yellow-200">
+                    <p class="text-gray-700 mb-3">
+                        We'd love your feedback! Post a review to our profile and get a <strong>5% discount</strong> on any project.
+                    </p>
+                    <a href="https://g.page/r/CZxwe-UnodgqEBE/review" target="_blank"
+                       class="inline-flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition ease-in-out duration-150 shadow-sm">
+                        <i class="fas fa-star mr-2"></i> Leave a Review Now!
+                    </a>
+                </div>
+
+                <div class="p-4 bg-yellow-100 rounded-md border border-yellow-200">
+                    <p class="text-gray-700 mb-3">
+                        Refer a friend and both get a <strong>5% discount</strong> on your projects! Share your unique referral link:
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                        <input type="text" id="referralLinkDisplay" readonly placeholder="Click 'Generate' for your link"
+                               class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 text-gray-700 sm:text-sm cursor-not-allowed">
+                        <button id="generateReferralLinkBtn"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition ease-in-out duration-150 shadow-sm flex-shrink-0">
+                            Generate Link
+                        </button>
+                        <button id="copyReferralLinkBtn"
+                                class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition ease-in-out duration-150 shadow-sm flex-shrink-0 hidden">
+                            Copy Link
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">
+                        Your friend can use this link or the code in the inquiry form to claim their discount.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cart Modal -->
+        <div id="cartModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-2xl w-full mx-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-2xl font-semibold text-gray-800">Your Cart</h3>
+                    <button id="closeCartModalBtn" class="text-gray-500 hover:text-gray-700 text-3xl leading-none">&times;</button>
+                </div>
+                <div id="cartItemsContainer" class="max-h-80 overflow-y-auto mb-4 border border-gray-200 rounded-md p-2">
+                    <!-- Cart items will be rendered here -->
+                </div>
+                <div class="text-right text-xl font-bold text-gray-800 mb-4">
+                    Total: ₹<span id="cartTotal">0.00</span>
+                </div>
+
+                <!-- Student Inquiry Form -->
+                <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-3">Enter Your Details (for Inquiry)</h4>
+                    <form id="inquiryForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="inquiryName" class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                            <input type="text" id="inquiryName" required
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="inquiryCollege" class="block text-sm font-medium text-gray-700 mb-1">College Name</label>
+                            <input type="text" id="inquiryCollege"
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="inquiryState" class="block text-sm font-medium text-gray-700 mb-1">State</label>
+                            <input type="text" id="inquiryState"
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="inquiryCity" class="block text-sm font-medium text-gray-700 mb-1">City/Village</label>
+                            <input type="text" id="inquiryCity"
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="inquiryMobile" class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                            <input type="tel" id="inquiryMobile" required pattern="[0-9]{10}" placeholder="10 digit mobile number"
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="inquiryEmail" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="inquiryEmail"
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="inquiryReferralCode" class="block text-sm font-medium text-gray-700 mb-1">Referral Code (Optional)</label>
+                            <input type="text" id="inquiryReferralCode" placeholder="Enter a referral code if you have one"
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="inquiryMessage" class="block text-sm font-medium text-gray-700 mb-1">Additional Message (Optional)</label>
+                            <textarea id="inquiryMessage" rows="2"
+                                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 no-print">
+                    <button id="clearCartBtn" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition ease-in-out duration-150 shadow-sm">
+                        Clear Cart
+                    </button>
+                    <button id="sendInquiryBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition ease-in-out duration-150 shadow-sm flex items-center justify-center space-x-2">
+                        <i class="fab fa-whatsapp"></i> <span>Send Inquiry (WhatsApp)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Detail Modal -->
+        <div id="projectDetailModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="projectDetailTitle" class="text-2xl font-semibold text-gray-800"></h3>
+                    <button id="closeProjectDetailModalBtn" class="text-gray-500 hover:text-gray-700 text-3xl leading-none">&times;</button>
+                </div>
+                <p class="text-sm text-gray-600 mb-2">Category: <span id="projectDetailCategory" class="font-medium"></span></p>
+                <p class="text-xl font-bold text-blue-700 mb-4">Cost: ₹<span id="projectDetailCost"></span></p>
+                <p class="text-gray-700 mb-4"><span id="projectDetailDescription"></span></p>
+                <div class="flex justify-end">
+                    <button id="addProjectToCartFromDetailBtn" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition ease-in-out duration-150 shadow-sm flex items-center justify-center space-x-2">
+                        <i class="fas fa-cart-plus"></i> <span>Add to Cart</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message Box for alerts -->
+        <div id="messageBox" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
+                <p id="messageBoxContent" class="text-lg font-medium text-gray-800 mb-4"></p>
+                <button id="messageBoxClose" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Constants and Global Variables ---
+        const ADMIN_USERNAME = "warade530";
+        const ADMIN_PASSWORD = "Pass@123";
+        const ADMIN_WHATSAPP_NUMBER = "918446173429"; // Your WhatsApp number without '+'
+        const LOCAL_STORAGE_KEY_PROJECTS = 'diyCircuitsProjects';
+        const LOCAL_STORAGE_KEY_ADMIN_AUTH = 'diyCircuitsAdminAuth';
+        const LOCAL_STORAGE_KEY_STUDENT_CART = 'diyCircuitsStudentCart';
+        const LOCAL_STORAGE_KEY_INQUIRIES = 'diyCircuitsInquiries'; // Key for storing inquiries
+
+        let projects = []; // Main array to store all projects
+        let studentCart = []; // Array to store items in the student's cart
+        let inquiries = []; // Array to store placed inquiries
+        let editingProjectIndex = -1; // -1 means not editing, otherwise stores the index of the project being edited
+
+        // --- DOM Elements ---
+        const loginSection = document.getElementById('loginSection');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const studentDashboard = document.getElementById('studentDashboard');
+        const showLoginBtn = document.getElementById('showLoginBtn');
+        const showStudentBtn = document.getElementById('showStudentBtn');
+        const loginForm = document.getElementById('loginForm');
+        const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+        const adminProjectForm = document.getElementById('adminProjectForm');
+        const adminProjectFormTitle = document.getElementById('adminProjectFormTitle');
+        const adminProjectId = document.getElementById('adminProjectId');
+        const adminProjectCategory = document.getElementById('adminProjectCategory');
+        const adminProjectTitle = document.getElementById('adminProjectTitle');
+        const adminProjectDescription = document.getElementById('adminProjectDescription'); // New description field
+        const adminProjectCost = document.getElementById('adminProjectCost');
+        const submitProjectBtn = document.getElementById('submitProjectBtn');
+        const cancelEditProjectBtn = document.getElementById('cancelEditProjectBtn');
+        const adminProjectTableBody = document.getElementById('adminProjectTableBody');
+        const noAdminProjectsMessage = document.getElementById('noAdminProjectsMessage');
+        const studentProjectList = document.getElementById('studentProjectList');
+        const noStudentProjectsMessage = document.getElementById('noStudentProjectsMessage');
+        const viewCartBtn = document.getElementById('viewCartBtn');
+        const cartItemCount = document.getElementById('cartItemCount');
+        const cartModal = document.getElementById('cartModal');
+        const closeCartModalBtn = document.getElementById('closeCartModalBtn');
+        const cartItemsContainer = document.getElementById('cartItemsContainer');
+        const cartTotal = document.getElementById('cartTotal');
+        const clearCartBtn = document.getElementById('clearCartBtn');
+        const sendInquiryBtn = document.getElementById('sendInquiryBtn'); 
+
+        // Inquiry form fields
+        const inquiryName = document.getElementById('inquiryName');
+        const inquiryCollege = document.getElementById('inquiryCollege');
+        const inquiryState = document.getElementById('inquiryState');
+        const inquiryCity = document.getElementById('inquiryCity');
+        const inquiryMobile = document.getElementById('inquiryMobile');
+        const inquiryEmail = document.getElementById('inquiryEmail');
+        const inquiryReferralCode = document.getElementById('inquiryReferralCode');
+        const inquiryMessage = document.getElementById('inquiryMessage');
+
+        // Referral elements
+        const generateReferralLinkBtn = document.getElementById('generateReferralLinkBtn');
+        const referralLinkDisplay = document.getElementById('referralLinkDisplay');
+        const copyReferralLinkBtn = document.getElementById('copyReferralLinkBtn');
+
+        const messageBox = document.getElementById('messageBox');
+        const messageBoxContent = document.getElementById('messageBoxContent');
+        const messageBoxClose = document.getElementById('messageBoxClose');
+
+        // Admin sub-section elements
+        const adminProjectsManagement = document.getElementById('adminProjectsManagement');
+        const adminInquiriesView = document.getElementById('adminInquiriesView'); 
+        const showAdminProjectsBtn = document.getElementById('showAdminProjectsBtn');
+        const showAdminInquiriesBtn = document.getElementById('showAdminInquiriesBtn'); 
+        const adminInquiriesTableBody = document.getElementById('adminInquiriesTableBody'); 
+        const noInquiriesMessage = document.getElementById('noInquiriesMessage'); 
+        const newInquiriesBadge = document.getElementById('newInquiriesBadge'); 
+        const clearAllInquiriesBtn = document.getElementById('clearAllInquiriesBtn'); 
+
+        const categoryFilter = document.getElementById('categoryFilter');
+        const projectSearch = document.getElementById('projectSearch');
+
+        // Project Detail Modal elements
+        const projectDetailModal = document.getElementById('projectDetailModal');
+        const closeProjectDetailModalBtn = document.getElementById('closeProjectDetailModalBtn');
+        const projectDetailTitle = document.getElementById('projectDetailTitle');
+        const projectDetailCategory = document.getElementById('projectDetailCategory');
+        const projectDetailCost = document.getElementById('projectDetailCost');
+        const projectDetailDescription = document.getElementById('projectDetailDescription');
+        const addProjectToCartFromDetailBtn = document.getElementById('addProjectToCartFromDetailBtn');
+        let currentProjectInDetailModal = null; // To hold the project object for adding to cart from detail modal
+
+        // JSON Upload elements
+        const jsonUploadInput = document.getElementById('jsonUploadInput');
+        const uploadJsonBtn = document.getElementById('uploadJsonBtn');
+        
+        // New DOM element for direct WhatsApp button
+        const directWhatsappBtn = document.getElementById('directWhatsappBtn');
+
+
+        // --- Project Data (Initial Load) ---
+        // This data will be loaded if LocalStorage is empty.
+        // As per user request, this array is now empty. Projects will be added via JSON upload or manual entry.
+        const initialProjectsData = []; 
+
+        // --- Utility Functions ---
+
+        /**
+         * Displays a custom message box instead of alert().
+         * @param {string} message - The message to display.
+         */
+        function showMessageBox(message) {
+            messageBoxContent.textContent = message;
+            messageBox.classList.remove('hidden');
+        }
+
+        // Event listener for message box close button
+        messageBoxClose.addEventListener('click', () => {
+            messageBox.classList.add('hidden');
+        });
+
+        /**
+         * Hides all view sections.
+         */
+        function hideAllSections() {
+            document.querySelectorAll('.view-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+        }
+
+        /**
+         * Hides all admin sub-sections.
+         */
+        function hideAdminSubSections() {
+            document.querySelectorAll('.admin-sub-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+        }
+
+        /**
+         * Saves data to LocalStorage.
+         * @param {string} key - The key for LocalStorage.
+         * @param {any} data - The data to save.
+         */
+        function saveData(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+            } catch (e) {
+                console.error(`Error saving to LocalStorage (${key}):`, e);
+                showMessageBox("Error saving data. LocalStorage might be full or unavailable.");
+            }
+        }
+
+        /**
+         * Loads data from LocalStorage.
+         * @param {string} key - The key for LocalStorage.
+         * @param {any} defaultValue - The default value if data is not found or corrupted.
+         * @returns {any} The loaded data or default value.
+         */
+        function loadData(key, defaultValue) {
+            try {
+                const storedData = localStorage.getItem(key);
+                return storedData ? JSON.parse(storedData) : defaultValue;
+            } catch (e) {
+                console.error(`Error loading from LocalStorage (${key}):`, e);
+                showMessageBox("Error loading data. Data might be corrupted or LocalStorage unavailable. Resetting data.");
+                return defaultValue; // Return default if loading fails
+            }
+        }
+
+        // --- Authentication Logic ---
+
+        /**
+         * Checks admin authentication status and displays the appropriate view.
+         */
+        function checkAuth() {
+            // Always show student dashboard first
+            showStudentDashboard();
+            // The admin login button is now always visible in the corner
+        }
+
+        /**
+         * Handles admin login form submission.
+         * @param {Event} event - The form submission event.
+         */
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                saveData(LOCAL_STORAGE_KEY_ADMIN_AUTH, true);
+                showAdminDashboard();
+                showMessageBox("Admin login successful!");
+            } else {
+                showMessageBox("Invalid username or password.");
+            }
+        }
+
+        /**
+         * Handles admin logout.
+         */
+        function handleAdminLogout() {
+            saveData(LOCAL_STORAGE_KEY_ADMIN_AUTH, false);
+            showLoginSection(); // Or showStudentDashboard() if you want to go back to student view
+            showMessageBox("Logged out successfully.");
+        }
+
+        // --- View Switching Functions ---
+
+        /**
+         * Shows the login section and hides others.
+         */
+        function showLoginSection() {
+            hideAllSections();
+            loginSection.classList.remove('hidden');
+        }
+
+        /**
+         * Shows the admin dashboard and hides others.
+         */
+        function showAdminDashboard() {
+            hideAllSections();
+            adminDashboard.classList.remove('hidden');
+            showAdminProjectsManagementSection(); // Default to projects management
+            updateNewInquiriesBadge(); // Update badge on showing dashboard
+        }
+
+        /**
+         * Shows the student dashboard and hides others.
+         */
+        function showStudentDashboard() {
+            hideAllSections();
+            studentDashboard.classList.remove('hidden');
+            renderStudentProjects(); // Re-render student cards on showing dashboard
+            updateCategoryFilter(); // Update categories for filter
+            projectSearch.value = ''; // Clear search on view change
+            categoryFilter.value = ''; // Clear filter on view change
+        }
+
+        /**
+         * Shows the admin projects management sub-section.
+         */
+        function showAdminProjectsManagementSection() {
+            hideAdminSubSections();
+            adminProjectsManagement.classList.remove('hidden');
+            renderAdminProjects();
+            showAdminProjectsBtn.classList.add('bg-blue-600');
+            showAdminProjectsBtn.classList.remove('bg-blue-500');
+            showAdminInquiriesBtn.classList.remove('bg-purple-600');
+            showAdminInquiriesBtn.classList.add('bg-purple-500');
+            resetProjectForm(); // Reset form when switching to projects management
+        }
+
+        /**
+         * Shows the admin inquiries view sub-section.
+         */
+        function showAdminInquiriesViewSection() {
+            hideAdminSubSections();
+            adminInquiriesView.classList.remove('hidden');
+            renderAdminInquiries();
+            showAdminInquiriesBtn.classList.add('bg-purple-600');
+            showAdminInquiriesBtn.classList.remove('bg-purple-500');
+            showAdminProjectsBtn.classList.remove('bg-blue-600');
+            showAdminProjectsBtn.classList.add('bg-blue-500');
+        }
+
+        // --- Admin Panel Logic ---
+
+        /**
+         * Renders projects in the admin table.
+         */
+        function renderAdminProjects() {
+            adminProjectTableBody.innerHTML = '';
+            if (projects.length === 0) {
+                noAdminProjectsMessage.classList.remove('hidden');
+            } else {
+                noAdminProjectsMessage.classList.add('hidden');
+                projects.forEach((project, index) => {
+                    const row = adminProjectTableBody.insertRow();
+                    row.classList.add('hover:bg-gray-50');
+
+                    row.insertCell().textContent = project.category;
+                    row.insertCell().textContent = project.title;
+                    row.insertCell().textContent = `₹${project.cost.toLocaleString('en-IN')}`; // Format cost for India
+
+                    const actionCell = row.insertCell();
+                    actionCell.classList.add('no-print', 'space-x-2', 'flex', 'flex-col', 'sm:flex-row', 'sm:space-x-2', 'space-y-1', 'sm:space-y-0');
+                    
+                    const editButton = document.createElement('button');
+                    editButton.innerHTML = '<i class="fas fa-edit"></i> Edit';
+                    editButton.classList.add(
+                        'px-3', 'py-1', 'bg-yellow-500', 'text-white', 'rounded-md', 'hover:bg-yellow-600',
+                        'focus:outline-none', 'focus:ring-2', 'focus:ring-offset-2', 'focus:ring-yellow-500',
+                        'transition', 'ease-in-out', 'duration-150', 'text-xs', 'flex', 'items-center', 'space-x-1'
+                    );
+                    editButton.dataset.index = index;
+                    editButton.addEventListener('click', handleEditProject);
+                    actionCell.appendChild(editButton);
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> Delete';
+                    deleteButton.classList.add(
+                        'px-3', 'py-1', 'bg-red-500', 'text-white', 'rounded-md', 'hover:bg-red-600',
+                        'focus:outline-none', 'focus:ring-2', 'focus:ring-offset-2', 'focus:ring-red-500',
+                        'transition', 'ease-in-out', 'duration-150', 'text-xs', 'flex', 'items-center', 'space-x-1'
+                    );
+                    deleteButton.dataset.index = index;
+                    deleteButton.addEventListener('click', handleDeleteProject);
+                    actionCell.appendChild(deleteButton);
+                });
+            }
+        }
+
+        /**
+         * Resets the project form to "Add New Project" mode.
+         */
+        function resetProjectForm() {
+            adminProjectForm.reset();
+            adminProjectId.value = ''; // Clear hidden ID
+            adminProjectFormTitle.textContent = 'Add New Project';
+            submitProjectBtn.textContent = 'Add Project';
+            cancelEditProjectBtn.classList.add('hidden');
+            editingProjectIndex = -1;
+        }
+
+        /**
+         * Handles editing a project from the admin table.
+         * @param {Event} event - The click event.
+         */
+        function handleEditProject(event) {
+            editingProjectIndex = parseInt(event.currentTarget.dataset.index);
+            const projectToEdit = projects[editingProjectIndex];
+
+            adminProjectId.value = projectToEdit.id; // Store project ID
+            adminProjectCategory.value = projectToEdit.category;
+            adminProjectTitle.value = projectToEdit.title;
+            adminProjectDescription.value = projectToEdit.description || ''; // Populate description
+            adminProjectCost.value = projectToEdit.cost;
+
+            adminProjectFormTitle.textContent = 'Edit Project';
+            submitProjectBtn.textContent = 'Update Project';
+            cancelEditProjectBtn.classList.remove('hidden');
+        }
+
+        /**
+         * Handles adding or updating a project from the admin form.
+         * @param {Event} event - The form submission event.
+         */
+        function handleSubmitProjectForm(event) {
+            event.preventDefault();
+            const id = adminProjectId.value;
+            const category = adminProjectCategory.value.trim();
+            const title = adminProjectTitle.value.trim();
+            const description = adminProjectDescription.value.trim(); // Get description
+            const cost = parseInt(adminProjectCost.value);
+
+            if (!category || !title || isNaN(cost) || cost < 0) {
+                showMessageBox("Please fill in all project fields correctly.");
+                return;
+            }
+
+            if (editingProjectIndex !== -1 && projects[editingProjectIndex].id === id) {
+                // Update existing project
+                projects[editingProjectIndex] = { id, category, title, description, cost };
+                showMessageBox("Project updated successfully!");
+            } else {
+                // Add new project
+                const newProject = { id: `proj-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`, category, title, description, cost };
+                projects.push(newProject);
+                showMessageBox("Project added successfully!");
+            }
+            
+            saveData(LOCAL_STORAGE_KEY_PROJECTS, projects);
+            renderAdminProjects();
+            resetProjectForm(); // Reset form after add/update
+            updateCategoryFilter(); // Update categories after changes
+            renderStudentProjects(); // Re-render student view to reflect changes
+        }
+
+        /**
+         * Handles deleting a project from the admin table.
+         * @param {Event} event - The click event.
+         */
+        function handleDeleteProject(event) {
+            const indexToDelete = parseInt(event.currentTarget.dataset.index);
+            if (!isNaN(indexToDelete) && indexToDelete >= 0 && indexToDelete < projects.length) {
+                if (confirm(`Are you sure you want to delete project: "${projects[indexToDelete].title}"? This action cannot be undone.`)) {
+                    projects.splice(indexToDelete, 1);
+                    saveData(LOCAL_STORAGE_KEY_PROJECTS, projects);
+                    renderAdminProjects();
+                    showMessageBox("Project deleted successfully!");
+                    updateCategoryFilter(); // Update categories after deleting a project
+                    renderStudentProjects(); // Re-render student view to reflect changes
+                }
+            }
+        }
+
+        /**
+         * Handles JSON file upload for projects.
+         */
+        function handleJsonUpload() {
+            const file = jsonUploadInput.files[0];
+            if (!file) {
+                showMessageBox("Please select a JSON file to upload.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const uploadedProjects = JSON.parse(e.target.result);
+
+                    if (!Array.isArray(uploadedProjects)) {
+                        showMessageBox("Invalid JSON file. Expected format is an array of project objects.");
+                        return;
+                    }
+
+                    const newProjects = [];
+                    uploadedProjects.forEach(p => {
+                        // Validate basic structure of each project object
+                        if (p.category && p.title && typeof p.cost === 'number' && p.cost >= 0) {
+                            newProjects.push({
+                                id: p.id || `proj-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+                                category: p.category,
+                                title: p.title,
+                                description: p.description || '', // Ensure description exists
+                                cost: p.cost
+                            });
+                        } else {
+                            console.warn("Invalid project object skipped:", p);
+                        }
+                    });
+
+                    if (newProjects.length > 0) {
+                        projects = [...projects, ...newProjects]; // Add new projects to existing ones
+                        saveData(LOCAL_STORAGE_KEY_PROJECTS, projects);
+                        renderAdminProjects();
+                        renderStudentProjects();
+                        updateCategoryFilter();
+                        showMessageBox(`${newProjects.length} projects successfully added!`);
+                    } else {
+                        showMessageBox("No valid projects found in the uploaded JSON file.");
+                    }
+                } catch (error) {
+                    console.error("Error parsing JSON file:", error);
+                    showMessageBox("Error reading or parsing JSON file. Please ensure it's a valid JSON format.");
+                } finally {
+                    jsonUploadInput.value = ''; // Clear the file input
+                }
+            };
+            reader.readAsText(file);
+        }
+
+
+        /**
+         * Renders inquiries in the admin inquiries table.
+         */
+        function renderAdminInquiries() {
+            adminInquiriesTableBody.innerHTML = '';
+            if (inquiries.length === 0) {
+                noInquiriesMessage.classList.remove('hidden');
+            } else {
+                noInquiriesMessage.classList.add('hidden');
+                inquiries.forEach((inquiry, index) => {
+                    const row = adminInquiriesTableBody.insertRow();
+                    row.classList.add('hover:bg-gray-50');
+                    // Highlight new inquiries
+                    if (inquiry.status === 'new') {
+                        row.classList.add('bg-yellow-50');
+                    }
+
+                    row.insertCell().textContent = inquiry.id.substring(0, 8); // Display short ID
+                    row.insertCell().textContent = inquiry.studentDetails.name;
+
+                    const contactCell = row.insertCell();
+                    contactCell.classList.add('text-sm', 'text-gray-700');
+                    contactCell.innerHTML = `
+                        <p>${inquiry.studentDetails.mobile}</p>
+                        <p>${inquiry.studentDetails.email || ''}</p>
+                        <p>${inquiry.studentDetails.college || ''}</p>
+                        <p>${inquiry.studentDetails.city || ''}, ${inquiry.studentDetails.state || ''}</p>
+                    `;
+
+                    const projectsCell = row.insertCell();
+                    projectsCell.classList.add('text-sm', 'text-gray-700');
+                    inquiry.inquiredItems.forEach(item => {
+                        const projectLine = document.createElement('p');
+                        projectLine.textContent = `${item.title} (x${item.quantity})`;
+                        projectsCell.appendChild(projectLine);
+                    });
+
+                    row.insertCell().textContent = `₹${inquiry.totalCost.toLocaleString('en-IN')}`;
+                    
+                    const referralCodeCell = row.insertCell();
+                    referralCodeCell.classList.add('text-sm', 'text-gray-700');
+                    referralCodeCell.textContent = inquiry.referralCodeUsed || 'N/A';
+
+                    const statusCell = row.insertCell();
+                    let statusColorClass = '';
+                    let statusText = '';
+                    switch (inquiry.status) {
+                        case 'new':
+                            statusColorClass = 'bg-red-100 text-red-800';
+                            statusText = 'New';
+                            break;
+                        case 'viewed':
+                            statusColorClass = 'bg-blue-100 text-blue-800';
+                            statusText = 'Viewed';
+                            break;
+                        case 'contacted':
+                            statusColorClass = 'bg-green-100 text-green-800';
+                            statusText = 'Contacted';
+                            break;
+                        case 'resolved':
+                            statusColorClass = 'bg-purple-100 text-purple-800';
+                            statusText = 'Resolved';
+                            break;
+                        case 'archived':
+                            statusColorClass = 'bg-gray-100 text-gray-800';
+                            statusText = 'Archived';
+                            break;
+                    }
+                    statusCell.innerHTML = `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColorClass}">${statusText}</span>`;
+                    statusCell.classList.add('whitespace-nowrap');
+
+
+                    const actionCell = row.insertCell();
+                    actionCell.classList.add('no-print', 'space-x-2', 'flex', 'flex-col', 'sm:flex-row', 'sm:space-x-2', 'space-y-1', 'sm:space-y-0');
+                    
+                    // Only show status change buttons if not already resolved/archived
+                    if (inquiry.status !== 'resolved' && inquiry.status !== 'archived') {
+                        const markViewedButton = document.createElement('button');
+                        markViewedButton.innerHTML = '<i class="fas fa-eye"></i> Viewed';
+                        markViewedButton.classList.add(
+                            'px-3', 'py-1', 'bg-blue-500', 'text-white', 'rounded-md', 'hover:bg-blue-600',
+                            'focus:outline-none', 'focus:ring-2', 'focus:ring-offset-2', 'focus:ring-blue-500',
+                            'transition', 'ease-in-out', 'duration-150', 'text-xs', 'flex', 'items-center', 'justify-center', 'space-x-1'
+                        );
+                        markViewedButton.dataset.index = index;
+                        markViewedButton.addEventListener('click', () => handleMarkInquiryStatus(index, 'viewed'));
+                        actionCell.appendChild(markViewedButton);
+
+                        const markContactedButton = document.createElement('button');
+                        markContactedButton.innerHTML = '<i class="fas fa-phone"></i> Contacted';
+                        markContactedButton.classList.add(
+                            'px-3', 'py-1', 'bg-green-500', 'text-white', 'rounded-md', 'hover:bg-green-600',
+                            'focus:outline-none', 'focus:ring-2', 'focus:ring-offset-2', 'focus:ring-green-500',
+                            'transition', 'ease-in-out', 'duration-150', 'text-xs', 'flex', 'items-center', 'justify-center', 'space-x-1'
+                        );
+                        markContactedButton.dataset.index = index;
+                        markContactedButton.addEventListener('click', () => handleMarkInquiryStatus(index, 'contacted'));
+                        actionCell.appendChild(markContactedButton);
+
+                        const markResolvedButton = document.createElement('button');
+                        markResolvedButton.innerHTML = '<i class="fas fa-check-circle"></i> Resolved';
+                        markResolvedButton.classList.add(
+                            'px-3', 'py-1', 'bg-purple-500', 'text-white', 'rounded-md', 'hover:bg-purple-600',
+                            'focus:outline-none', 'focus:ring-2', 'focus:ring-offset-2', 'focus:ring-purple-500',
+                            'transition', 'ease-in-out', 'duration-150', 'text-xs', 'flex', 'items-center', 'justify-center', 'space-x-1'
+                        );
+                        markResolvedButton.dataset.index = index;
+                        markResolvedButton.addEventListener('click', () => handleMarkInquiryStatus(index, 'resolved'));
+                        actionCell.appendChild(markResolvedButton);
+                    }
+                    
+                    const deleteButton = document.createElement('button');
+                    deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> Delete';
+                    deleteButton.classList.add(
+                        'px-3', 'py-1', 'bg-red-500', 'text-white', 'rounded-md', 'hover:bg-red-600',
+                        'focus:outline-none', 'focus:ring-2', 'focus:ring-offset-2', 'focus:ring-red-500',
+                        'transition', 'ease-in-out', 'duration-150', 'text-xs', 'flex', 'items-center', 'justify-center', 'space-x-1'
+                    );
+                    deleteButton.dataset.index = index;
+                    deleteButton.addEventListener('click', handleDeleteInquiry);
+                    actionCell.appendChild(deleteButton);
+                });
+            }
+            updateNewInquiriesBadge(); // Update badge after rendering inquiries
+        }
+
+        /**
+         * Handles marking an inquiry with a specific status.
+         * @param {number} index - The index of the inquiry to update.
+         * @param {string} status - The new status ('viewed', 'contacted', 'resolved', 'archived').
+         */
+        function handleMarkInquiryStatus(index, status) {
+            if (!isNaN(index) && index >= 0 && index < inquiries.length) {
+                inquiries[index].status = status;
+                saveData(LOCAL_STORAGE_KEY_INQUIRIES, inquiries);
+                renderAdminInquiries();
+                showMessageBox(`Inquiry marked as '${status}'.`);
+            }
+        }
+
+        /**
+         * Handles deleting an inquiry from the admin table.
+         * @param {Event} event - The click event.
+         */
+        function handleDeleteInquiry(event) {
+            const indexToDelete = parseInt(event.currentTarget.dataset.index);
+            if (!isNaN(indexToDelete) && indexToDelete >= 0 && indexToDelete < inquiries.length) {
+                if (confirm(`Are you sure you want to delete inquiry from "${inquiries[indexToDelete].studentDetails.name}"? This action cannot be undone.`)) {
+                    inquiries.splice(indexToDelete, 1);
+                    saveData(LOCAL_STORAGE_KEY_INQUIRIES, inquiries);
+                    renderAdminInquiries();
+                    showMessageBox("Inquiry successfully deleted!");
+                }
+            }
+        }
+
+        /**
+         * Clears all inquiries from the admin panel.
+         */
+        function handleClearAllInquiries() {
+            if (inquiries.length === 0) {
+                showMessageBox("No inquiries to clear.");
+                return;
+            }
+            // Using confirm for critical action
+            if (confirm("Are you sure you want to clear all inquiries? This action cannot be undone.")) {
+                inquiries = [];
+                saveData(LOCAL_STORAGE_KEY_INQUIRIES, inquiries);
+                renderAdminInquiries();
+                showMessageBox("All inquiries cleared.");
+            }
+        }
+
+        /**
+         * Updates the new inquiries badge count.
+         */
+        function updateNewInquiriesBadge() {
+            const newInquiriesCount = inquiries.filter(inquiry => inquiry.status === 'new').length;
+            if (newInquiriesCount > 0) {
+                newInquiriesBadge.textContent = newInquiriesCount;
+                newInquiriesBadge.classList.remove('hidden');
+            } else {
+                newInquiriesBadge.classList.add('hidden');
+            }
+        }
+
+        // --- Student Panel Logic ---
+
+        /**
+         * Populates the category filter dropdown.
+         */
+        function updateCategoryFilter() {
+            const categories = [...new Set(projects.map(p => p.category))].sort();
+            categoryFilter.innerHTML = '<option value="">All Categories</option>';
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
+            });
+        }
+
+        /**
+         * Renders projects as cards in the student view, applying filters and search.
+         */
+        function renderStudentProjects() {
+            studentProjectList.innerHTML = '';
+            const selectedCategory = categoryFilter.value;
+            const searchTerm = projectSearch.value.toLowerCase();
+
+            const filteredProjects = projects.filter(project => {
+                const matchesCategory = selectedCategory === '' || project.category === selectedCategory;
+                const matchesSearch = project.title.toLowerCase().includes(searchTerm) || project.description.toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filteredProjects.length === 0) {
+                noStudentProjectsMessage.classList.remove('hidden');
+            } else {
+                noStudentProjectsMessage.classList.add('hidden');
+                filteredProjects.forEach(project => {
+                    const projectCard = document.createElement('div');
+                    projectCard.classList.add(
+                        'bg-white', 'p-5', 'rounded-lg', 'shadow-md', 'flex', 'flex-col',
+                        'justify-between', 'transform', 'hover:scale-105', 'transition-transform', 'duration-200',
+                        'cursor-pointer' // Add cursor pointer to indicate clickable
+                    );
+                    projectCard.dataset.projectId = project.id; // Store project ID for detail view
+
+                    projectCard.innerHTML = `
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">${project.title}</h4>
+                        <p class="text-sm text-gray-600 mb-3">Category: ${project.category}</p>
+                        <p class="text-xl font-bold text-blue-700 mb-4">Cost: ₹${project.cost.toLocaleString('en-IN')}</p>
+                        <button class="add-to-cart-btn w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition ease-in-out duration-150 shadow-sm flex items-center justify-center space-x-2">
+                            <i class="fas fa-cart-plus"></i> <span>Add to Cart</span>
+                        </button>
+                    `;
+                    // Event listener for opening detail modal (on card click, not button)
+                    projectCard.addEventListener('click', (event) => {
+                        // Ensure click on button doesn't trigger modal
+                        if (!event.target.closest('.add-to-cart-btn')) {
+                            openProjectDetailModal(project);
+                        }
+                    });
+
+                    const addToCartBtn = projectCard.querySelector('.add-to-cart-btn');
+                    addToCartBtn.addEventListener('click', (event) => {
+                        event.stopPropagation(); // Prevent card click from firing when button is clicked
+                        handleAddToCart(project);
+                    });
+                    studentProjectList.appendChild(projectCard);
+                });
+            }
+        }
+
+        /**
+         * Opens the project detail modal.
+         * @param {Object} project - The project object to display.
+         */
+        function openProjectDetailModal(project) {
+            currentProjectInDetailModal = project; // Store the project for add to cart button
+            projectDetailTitle.textContent = project.title;
+            projectDetailCategory.textContent = project.category;
+            projectDetailCost.textContent = project.cost.toLocaleString('en-IN');
+            projectDetailDescription.textContent = project.description || 'No description available.';
+            projectDetailModal.classList.remove('hidden');
+        }
+
+        /**
+         * Closes the project detail modal.
+         */
+        function closeProjectDetailModal() {
+            projectDetailModal.classList.add('hidden');
+            currentProjectInDetailModal = null;
+        }
+
+        /**
+         * Adds a project to the student's cart.
+         * @param {Object} project - The project object to add.
+         */
+        function handleAddToCart(project) {
+            const existingItem = studentCart.find(item => item.id === project.id); // Use project ID for uniqueness
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                studentCart.push({ ...project, quantity: 1 });
+            }
+            saveData(LOCAL_STORAGE_KEY_STUDENT_CART, studentCart);
+            updateCartCount();
+            showMessageBox(`${project.title} added to cart!`);
+        }
+
+        /**
+         * Updates the cart item count displayed.
+         */
+        function updateCartCount() {
+            const totalItems = studentCart.reduce((sum, item) => sum + item.quantity, 0);
+            cartItemCount.textContent = totalItems;
+        }
+
+        /**
+         * Opens the cart modal and renders cart items.
+         */
+        function openCartModal() {
+            cartModal.classList.remove('hidden');
+            renderCartItems();
+        }
+
+        /**
+         * Closes the cart modal.
+         */
+        function closeCartModal() {
+            cartModal.classList.add('hidden');
+        }
+
+        /**
+         * Renders items in the cart modal.
+         */
+        function renderCartItems() {
+            cartItemsContainer.innerHTML = '';
+            let totalCost = 0;
+
+            if (studentCart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-center text-gray-500 py-4">Your cart is empty.</p>';
+                sendInquiryBtn.disabled = true; // Disable send inquiry if cart is empty
+            } else {
+                sendInquiryBtn.disabled = false; // Enable send inquiry if cart has items
+                studentCart.forEach((item, index) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('flex', 'justify-between', 'items-center', 'py-2', 'border-b', 'border-gray-100');
+                    itemDiv.innerHTML = `
+                        <div>
+                            <p class="font-medium text-gray-800">${item.title}</p>
+                            <p class="text-sm text-gray-600">₹${item.cost.toLocaleString('en-IN')} x ${item.quantity}</p>
+                        </div>
+                        <div class="flex items-center space-x-2 no-print">
+                            <button class="quantity-btn px-2 py-1 bg-gray-200 rounded-md hover:bg-gray-300 text-gray-700" data-index="${index}" data-action="decrease">-</button>
+                            <span class="font-bold">${item.quantity}</span>
+                            <button class="quantity-btn px-2 py-1 bg-gray-200 rounded-md hover:bg-gray-300 text-gray-700" data-index="${index}" data-action="increase">+</button>
+                            <button class="remove-from-cart-btn px-3 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200 transition text-xs" data-index="${index}">
+                                <i class="fas fa-times"></i> Remove
+                            </button>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(itemDiv);
+                    totalCost += item.cost * item.quantity;
+                });
+            }
+            cartTotal.textContent = totalCost.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            // Add event listeners for quantity buttons and remove buttons
+            cartItemsContainer.querySelectorAll('.quantity-btn').forEach(button => {
+                button.addEventListener('click', handleQuantityChange);
+            });
+            cartItemsContainer.querySelectorAll('.remove-from-cart-btn').forEach(button => {
+                button.addEventListener('click', handleRemoveFromCart);
+            });
+        }
+
+        /**
+         * Handles changing the quantity of an item in the cart.
+         * @param {Event} event - The click event.
+         */
+        function handleQuantityChange(event) {
+            const index = parseInt(event.currentTarget.dataset.index);
+            const action = event.currentTarget.dataset.action;
+
+            if (action === 'increase') {
+                studentCart[index].quantity++;
+            } else if (action === 'decrease') {
+                if (studentCart[index].quantity > 1) {
+                    studentCart[index].quantity--;
+                } else {
+                    // If quantity becomes 0, remove the item
+                    studentCart.splice(index, 1);
+                }
+            }
+            saveData(LOCAL_STORAGE_KEY_STUDENT_CART, studentCart);
+            renderCartItems();
+            updateCartCount();
+        }
+
+        /**
+         * Handles removing an item completely from the cart.
+         * @param {Event} event - The click event.
+         */
+        function handleRemoveFromCart(event) {
+            const index = parseInt(event.currentTarget.dataset.index);
+            studentCart.splice(index, 1);
+            saveData(LOCAL_STORAGE_KEY_STUDENT_CART, studentCart);
+            renderCartItems();
+            updateCartCount();
+            showMessageBox("Item removed from cart.");
+        }
+
+        /**
+         * Clears all items from the cart.
+         */
+        function handleClearCart() {
+            if (studentCart.length === 0) {
+                showMessageBox("Cart is already empty.");
+                return;
+            }
+            studentCart = [];
+            saveData(LOCAL_STORAGE_KEY_STUDENT_CART, studentCart);
+            renderCartItems();
+            updateCartCount();
+            showMessageBox("Cart cleared.");
+        }
+
+        /**
+         * Generates the inquiry message, saves it, and opens WhatsApp.
+         */
+        function handleSendInquiry() {
+            const name = inquiryName.value.trim();
+            const college = inquiryCollege.value.trim();
+            const state = inquiryState.value.trim();
+            const city = inquiryCity.value.trim();
+            const mobile = inquiryMobile.value.trim();
+            const email = inquiryEmail.value.trim();
+            const referralCodeUsed = inquiryReferralCode.value.trim();
+            const message = inquiryMessage.value.trim();
+
+            if (!name || !mobile) {
+                showMessageBox("Please enter your name and mobile number to send inquiry.");
+                return;
+            }
+            if (!/^\d{10}$/.test(mobile)) {
+                showMessageBox("Please enter a valid 10-digit mobile number.");
+                return;
+            }
+            if (email && !/\S+@\S+\.\S+/.test(email)) {
+                showMessageBox("Please enter a valid email address.");
+                return;
+            }
+            if (studentCart.length === 0) {
+                showMessageBox("Your cart is empty. Please add projects before sending an inquiry.");
+                return;
+            }
+
+            const inquiryId = `INQ-${Date.now()}`;
+            const totalCost = studentCart.reduce((sum, item) => sum + (item.cost * item.quantity), 0);
+
+            const studentDetails = { name, college, state, city, mobile, email };
+
+            const inquiryObject = {
+                id: inquiryId,
+                studentDetails: studentDetails,
+                timestamp: new Date().toISOString(),
+                inquiredItems: JSON.parse(JSON.stringify(studentCart)), // Deep copy of cart items
+                totalCost: totalCost,
+                referralCodeUsed: referralCodeUsed,
+                status: 'new' // New inquiry status
+            };
+
+            inquiries.push(inquiryObject);
+            saveData(LOCAL_STORAGE_KEY_INQUIRIES, inquiries); // Save the new inquiry
+
+            let whatsappMessage = `DIY Circuits - Project Inquiry\n\n`;
+            whatsappMessage += `Inquiry ID: ${inquiryId}\n`;
+            whatsappMessage += `Student Name: ${name}\n`;
+            if (college) whatsappMessage += `College Name: ${college}\n`;
+            if (state) whatsappMessage += `State: ${state}\n`;
+            if (city) whatsappMessage += `City/Village: ${city}\n`;
+            whatsappMessage += `Mobile Number: ${mobile}\n`;
+            if (email) whatsappMessage += `Email: ${email}\n`;
+            if (referralCodeUsed) whatsappMessage += `Referral Code Used: ${referralCodeUsed}\n`;
+            if (message) whatsappMessage += `Additional Message: ${message}\n`;
+            whatsappMessage += `\nInquired Projects:\n`;
+            studentCart.forEach(item => {
+                whatsappMessage += `- ${item.title} (Category: ${item.category}) - ₹${item.cost.toLocaleString('en-IN')} x ${item.quantity}\n`;
+            });
+            whatsappMessage += `\nEstimated Total Cost: ₹${totalCost.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\n\n`;
+            whatsappMessage += `--- DIY Circuits Contact ---\n`;
+            whatsappMessage += `Address: 373, Near Chinnapa Akhada, Panchpaoli Rd, Balabhaupeth, Nagpur, Maharashtra 440017\n`;
+            whatsappMessage += `Contact: +91-8446173429, +91-75585 56937\n`;
+            whatsappMessage += `Website: www.diycircuits.in\n`;
+            whatsappMessage += `Social: @diycircuits`;
+
+            const encodedMessage = encodeURIComponent(whatsappMessage);
+            const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+            window.open(whatsappUrl, '_blank'); // Open WhatsApp in a new tab
+
+            showMessageBox("Your inquiry is being sent to WhatsApp. Please send the message in WhatsApp.");
+
+            // Clear cart and inquiry form after sending
+            studentCart = [];
+            saveData(LOCAL_STORAGE_KEY_STUDENT_CART, studentCart);
+            updateCartCount();
+            renderCartItems(); // Re-render cart to show it's empty
+            inquiryName.value = '';
+            inquiryCollege.value = '';
+            inquiryState.value = '';
+            inquiryCity.value = '';
+            inquiryMobile.value = '';
+            inquiryEmail.value = '';
+            inquiryReferralCode.value = '';
+            inquiryMessage.value = '';
+
+            updateNewInquiriesBadge(); // Update badge after a new inquiry is placed
+        }
+
+        /**
+         * Generates a unique referral link (code) and displays it.
+         */
+        function generateReferralLink() {
+            const referralCode = `DIYREF-${Date.now().toString(36).toUpperCase()}`; // Simple unique code
+            referralLinkDisplay.value = referralCode;
+            copyReferralLinkBtn.classList.remove('hidden');
+            showMessageBox("Your referral code has been generated. Copy it and share!");
+        }
+
+        /**
+         * Copies the generated referral link to the clipboard.
+         */
+        function copyReferralLink() {
+            referralLinkDisplay.select();
+            referralLinkDisplay.setSelectionRange(0, 99999); // For mobile devices
+            try {
+                document.execCommand('copy');
+                showMessageBox("Referral code copied to clipboard!");
+            } catch (err) {
+                console.error('Failed to copy referral code: ', err);
+                showMessageBox("Failed to copy referral code. Please copy it manually.");
+            }
+        }
+
+        /**
+         * Handles a direct WhatsApp inquiry (general message, not cart-specific).
+         */
+        function handleDirectWhatsappInquiry() {
+            const defaultMessage = "Hello DIY Circuits, I have a general inquiry about your projects/services. Could you please assist me?";
+            const encodedMessage = encodeURIComponent(defaultMessage);
+            const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+            showMessageBox("Opening WhatsApp for direct inquiry. Please send your message.");
+        }
+
+        // --- Event Listeners ---
+        showLoginBtn.addEventListener('click', showLoginSection);
+        showStudentBtn.addEventListener('click', showStudentDashboard);
+        loginForm.addEventListener('submit', handleLogin);
+        adminLogoutBtn.addEventListener('click', handleAdminLogout);
+        adminProjectForm.addEventListener('submit', handleSubmitProjectForm);
+        cancelEditProjectBtn.addEventListener('click', resetProjectForm);
+        viewCartBtn.addEventListener('click', openCartModal);
+        closeCartModalBtn.addEventListener('click', closeCartModal);
+        clearCartBtn.addEventListener('click', handleClearCart);
+        sendInquiryBtn.addEventListener('click', handleSendInquiry); 
+
+        // Project Detail Modal listeners
+        closeProjectDetailModalBtn.addEventListener('click', closeProjectDetailModal);
+        addProjectToCartFromDetailBtn.addEventListener('click', () => {
+            if (currentProjectInDetailModal) {
+                handleAddToCart(currentProjectInDetailModal);
+                closeProjectDetailModal(); // Close modal after adding to cart
+            }
+        });
+
+        // JSON Upload listeners
+        uploadJsonBtn.addEventListener('click', handleJsonUpload);
+
+        // Referral event listeners
+        generateReferralLinkBtn.addEventListener('click', generateReferralLink);
+        copyReferralLinkBtn.addEventListener('click', copyReferralLink);
+
+        // Admin sub-section navigation
+        showAdminProjectsBtn.addEventListener('click', showAdminProjectsManagementSection);
+        showAdminInquiriesBtn.addEventListener('click', showAdminInquiriesViewSection); 
+        clearAllInquiriesBtn.addEventListener('click', handleClearAllInquiries); 
+
+        // New event listener for direct WhatsApp button
+        directWhatsappBtn.addEventListener('click', handleDirectWhatsappInquiry);
+
+
+        // Filter and Search event listeners (debounce for search for better performance)
+        categoryFilter.addEventListener('change', renderStudentProjects);
+        let searchTimeout;
+        projectSearch.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(renderStudentProjects, 300); // Debounce search
+        });
+
+        // --- Initial Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load projects from LocalStorage, or use initial data (which is now empty)
+            let loadedProjects = loadData(LOCAL_STORAGE_KEY_PROJECTS, initialProjectsData);
+            // Ensure all loaded projects have a unique ID. If not, generate one.
+            projects = loadedProjects.map(p => ({ ...p, id: p.id || `proj-${Date.now()}-${Math.random().toString(36).substring(2, 9)}` }));
+            // Save back to ensure all projects have IDs for consistency
+            saveData(LOCAL_STORAGE_KEY_PROJECTS, projects); 
+
+            // Load student cart
+            studentCart = loadData(LOCAL_STORAGE_KEY_STUDENT_CART, []);
+            // Load inquiries
+            inquiries = loadData(LOCAL_STORAGE_KEY_INQUIRIES, []);
+
+            checkAuth(); // Determine which view to show initially (now defaults to student)
+            updateCartCount(); // Update cart count on load
+            updateCategoryFilter(); // Populate category filter on load
+            updateNewInquiriesBadge(); // Update new inquiries badge on load
+        });
+    </script>
+</body>
+</html>
